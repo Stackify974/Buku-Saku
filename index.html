@@ -102,13 +102,13 @@
                     </button>
 
                     <!-- Notifikasi Transaksi & Anggaran -->
-                    <div class="relative">
-                        <button id="notifBellBtn" onclick="toggleNotifDropdown()" class="p-2 text-slate-500 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition relative">
+                    <div id="notifContainer" class="relative">
+                        <button id="notifBellBtn" onclick="toggleNotifDropdown(event)" class="p-2 text-slate-500 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition relative">
                             <i data-lucide="bell" class="w-4 h-4 sm:w-5 sm:h-5"></i>
                             <span id="notifBadge" class="hidden absolute top-1 right-1 w-4 h-4 bg-rose-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">0</span>
                         </button>
                         <!-- Notif Dropdown -->
-                        <div id="notifDropdown" class="hidden fixed sm:absolute left-3 right-3 sm:left-auto sm:right-0 mt-2 sm:w-80 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 z-50 p-4">
+                        <div id="notifDropdown" onclick="event.stopPropagation()" class="hidden fixed sm:absolute left-3 right-3 sm:left-auto sm:right-0 mt-2 sm:w-80 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 z-50 p-4">
                             <div class="flex items-center justify-between mb-2.5 pb-2 border-b border-slate-100 dark:border-slate-700">
                                 <h4 class="font-semibold text-sm text-slate-800 dark:text-white flex items-center gap-1.5">
                                     <i data-lucide="bell-ring" class="w-4 h-4 text-indigo-500"></i>
@@ -243,7 +243,7 @@
 
             <!-- CHARTS SECTION -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
-                <!-- Donut Chart: Distribusi Masuk & Keluar (Sesuai Gambar Referensi) -->
+                <!-- Donut Chart: Distribusi Masuk & Keluar -->
                 <div class="lg:col-span-5 bg-white dark:bg-slate-800 rounded-2xl p-5 sm:p-6 border border-slate-200 dark:border-slate-700/80 shadow-sm flex flex-col justify-between">
                     <div class="flex items-start justify-between gap-3 mb-5">
                         <div class="max-w-[56%]">
@@ -295,31 +295,66 @@
                 </div>
             </div>
 
-            <!-- RECENT TRANSACTIONS TABLE -->
-            <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-700/80 shadow-sm space-y-3 sm:space-y-4">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h3 class="font-bold text-slate-800 dark:text-white text-sm sm:text-base">Transaksi Terbaru</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400">Pencatatan keuangan yang baru dimasukkan</p>
+            <!-- KARTU RINGKAS BULAN AKTIF DI ATAS TRANSAKSI TERBARU (BISA DIGESER KE SAMPING DI HP & LAPTOP) -->
+            <div class="space-y-3 sm:space-y-4">
+                <div class="flex overflow-x-auto gap-2.5 pb-1 custom-scrollbar">
+                    <div class="bg-white dark:bg-slate-800 rounded-xl px-3.5 py-2.5 border border-slate-200 dark:border-slate-700/80 shadow-sm flex items-center justify-between gap-3 min-w-[205px] sm:min-w-[235px] flex-1 shrink-0">
+                        <div class="min-w-0">
+                            <span class="text-[11px] font-medium text-slate-400 block truncate">Pemasukan Bulan Ini</span>
+                            <p id="dashMasukBulanIni" class="text-xs sm:text-sm font-bold text-emerald-600 dark:text-emerald-400 mt-0.5 truncate">Rp 0</p>
+                        </div>
+                        <div class="w-7 h-7 shrink-0 rounded-lg bg-emerald-50 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                            <i data-lucide="arrow-down-left" class="w-3.5 h-3.5"></i>
+                        </div>
                     </div>
-                    <button onclick="gantiTab('transaksi')" class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center space-x-1 shrink-0">
-                        <span>Lihat semua</span>
-                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
-                    </button>
+
+                    <div class="bg-white dark:bg-slate-800 rounded-xl px-3.5 py-2.5 border border-slate-200 dark:border-slate-700/80 shadow-sm flex items-center justify-between gap-3 min-w-[205px] sm:min-w-[235px] flex-1 shrink-0">
+                        <div class="min-w-0">
+                            <span class="text-[11px] font-medium text-slate-400 block truncate">Pengeluaran Bulan Ini</span>
+                            <p id="dashKeluarBulanIni" class="text-xs sm:text-sm font-bold text-rose-600 dark:text-rose-400 mt-0.5 truncate">Rp 0</p>
+                        </div>
+                        <div class="w-7 h-7 shrink-0 rounded-lg bg-rose-50 dark:bg-rose-950/70 text-rose-600 dark:text-rose-400 flex items-center justify-center">
+                            <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 rounded-xl px-3.5 py-2.5 border border-slate-200 dark:border-slate-700/80 shadow-sm flex items-center justify-between gap-3 min-w-[205px] sm:min-w-[235px] flex-1 shrink-0">
+                        <div class="min-w-0">
+                            <span class="text-[11px] font-medium text-slate-400 block truncate">Arus Kas Bersih (Net)</span>
+                            <p id="dashNetBulanIni" class="text-xs sm:text-sm font-bold text-indigo-600 dark:text-indigo-400 mt-0.5 truncate">Rp 0</p>
+                        </div>
+                        <div class="w-7 h-7 shrink-0 rounded-lg bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                            <i data-lucide="activity" class="w-3.5 h-3.5"></i>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="overflow-x-auto -mx-4 sm:mx-0">
-                    <table class="w-full text-left border-collapse text-xs sm:text-sm min-w-[460px]">
-                        <thead>
-                            <tr class="border-b border-slate-200 dark:border-slate-700 text-slate-400 font-semibold uppercase text-[10px] sm:text-[11px]">
-                                <th class="py-2.5 px-4 sm:px-3">Catatan / Kategori</th>
-                                <th class="py-2.5 px-3">Jenis</th>
-                                <th class="py-2.5 px-3">Tanggal &amp; Waktu</th>
-                                <th class="py-2.5 px-4 sm:px-3 text-right">Jumlah</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tblRecentTransaksi" class="divide-y divide-slate-100 dark:divide-slate-700/50"></tbody>
-                    </table>
+                <!-- RECENT TRANSACTIONS TABLE -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-700/80 shadow-sm space-y-3 sm:space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="font-bold text-slate-800 dark:text-white text-sm sm:text-base">Transaksi Terbaru</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Pencatatan keuangan yang baru dimasukkan</p>
+                        </div>
+                        <button onclick="gantiTab('transaksi')" class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center space-x-1 shrink-0">
+                            <span>Lihat semua</span>
+                            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+
+                    <div class="overflow-x-auto -mx-4 sm:mx-0">
+                        <table class="w-full text-left border-collapse text-xs sm:text-sm min-w-[460px]">
+                            <thead>
+                                <tr class="border-b border-slate-200 dark:border-slate-700 text-slate-400 font-semibold uppercase text-[10px] sm:text-[11px]">
+                                    <th class="py-2.5 px-4 sm:px-3">Catatan / Kategori</th>
+                                    <th class="py-2.5 px-3">Jenis</th>
+                                    <th class="py-2.5 px-3">Tanggal &amp; Waktu</th>
+                                    <th class="py-2.5 px-4 sm:px-3 text-right">Jumlah</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tblRecentTransaksi" class="divide-y divide-slate-100 dark:divide-slate-700/50"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </section>
@@ -337,31 +372,47 @@
                 </button>
             </div>
 
-            <!-- Filters Bar (2 Kolom di HP) -->
-            <div class="bg-white dark:bg-slate-800 p-3.5 sm:p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-sm grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
-                <div class="relative col-span-2 sm:col-span-1">
-                    <i data-lucide="search" class="w-4 h-4 absolute left-3 top-2.5 sm:top-3 text-slate-400"></i>
-                    <input type="text" id="txSearch" oninput="renderTabelTransaksi()" placeholder="Cari catatan / kategori..." class="w-full pl-9 pr-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <!-- Filters Bar -->
+            <div class="bg-white dark:bg-slate-800 p-3.5 sm:p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-sm space-y-2.5">
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
+                    <div class="relative col-span-2 sm:col-span-1">
+                        <i data-lucide="search" class="w-4 h-4 absolute left-3 top-2.5 sm:top-3 text-slate-400"></i>
+                        <input type="text" id="txSearch" oninput="renderTabelTransaksi()" placeholder="Cari catatan / kategori..." class="w-full pl-9 pr-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <select id="txFilterJenis" onchange="renderTabelTransaksi()" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="semua">Semua Jenis</option>
+                            <option value="Pemasukan">Pemasukan</option>
+                            <option value="Pengeluaran">Pengeluaran</option>
+                        </select>
+                    </div>
+                    <div>
+                        <select id="txSortBy" onchange="renderTabelTransaksi()" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="tgl-desc">Tanggal Terbaru</option>
+                            <option value="tgl-asc">Tanggal Terlama</option>
+                            <option value="nom-desc">Nominal Terbesar</option>
+                            <option value="nom-asc">Nominal Terkecil</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center space-x-1 col-span-2 sm:col-span-1">
+                        <input type="date" id="txFilterTglAwal" onchange="renderTabelTransaksi()" class="w-1/2 px-2 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs focus:outline-none">
+                        <span class="text-slate-400 text-xs">-</span>
+                        <input type="date" id="txFilterTglAkhir" onchange="renderTabelTransaksi()" class="w-1/2 px-2 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs focus:outline-none">
+                    </div>
                 </div>
-                <div>
-                    <select id="txFilterJenis" onchange="renderTabelTransaksi()" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                        <option value="semua">Semua Jenis</option>
-                        <option value="Pemasukan">Pemasukan</option>
-                        <option value="Pengeluaran">Pengeluaran</option>
-                    </select>
-                </div>
-                <div>
-                    <select id="txSortBy" onchange="renderTabelTransaksi()" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                        <option value="tgl-desc">Tanggal Terbaru</option>
-                        <option value="tgl-asc">Tanggal Terlama</option>
-                        <option value="nom-desc">Nominal Terbesar</option>
-                        <option value="nom-asc">Nominal Terkecil</option>
-                    </select>
-                </div>
-                <div class="flex items-center space-x-1 col-span-2 sm:col-span-1">
-                    <input type="date" id="txFilterTglAwal" onchange="renderTabelTransaksi()" class="w-1/2 px-2 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs focus:outline-none">
-                    <span class="text-slate-400 text-xs">-</span>
-                    <input type="date" id="txFilterTglAkhir" onchange="renderTabelTransaksi()" class="w-1/2 px-2 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs focus:outline-none">
+
+                <!-- Quick Month Filter & Reset -->
+                <div class="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-slate-100 dark:border-slate-700/60 text-xs">
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" id="txFilterBulanAktifCheck" onchange="renderTabelTransaksi()" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
+                        <label for="txFilterBulanAktifCheck" class="text-slate-600 dark:text-slate-300 font-medium cursor-pointer">
+                            Hanya bulan aktif (<span id="txLabelBulanAktif" class="font-bold text-indigo-600 dark:text-indigo-400"></span>)
+                        </label>
+                    </div>
+                    <button type="button" onclick="resetFilterTransaksi()" class="text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 font-semibold flex items-center gap-1">
+                        <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                        <span>Reset Filter</span>
+                    </button>
                 </div>
             </div>
 
@@ -431,10 +482,20 @@
                         <h2 class="text-lg sm:text-xl font-bold tracking-tight text-slate-900 dark:text-white">DANA DARURAT</h2>
                         <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">Bantalan keamanan finansial keluarga</p>
                     </div>
-                    <button onclick="bukaModalDanaDarurat()" class="flex items-center justify-center space-x-1.5 bg-amber-600 hover:bg-amber-700 text-white font-medium text-xs sm:text-sm px-4 py-2.5 rounded-xl shadow-sm transition">
-                        <i data-lucide="settings" class="w-4 h-4"></i>
-                        <span>Atur Target Dana Darurat</span>
-                    </button>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button onclick="bukaModalMutasiDana('danaDarurat', 'setor')" class="flex items-center space-x-1 bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-xs px-3 py-2 rounded-xl shadow-sm transition">
+                            <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
+                            <span>Setor</span>
+                        </button>
+                        <button onclick="bukaModalMutasiDana('danaDarurat', 'tarik')" class="flex items-center space-x-1 bg-rose-600 hover:bg-rose-700 text-white font-medium text-xs px-3 py-2 rounded-xl shadow-sm transition">
+                            <i data-lucide="minus-circle" class="w-3.5 h-3.5"></i>
+                            <span>Tarik</span>
+                        </button>
+                        <button onclick="bukaModalDanaDarurat()" class="flex items-center justify-center space-x-1.5 bg-amber-600 hover:bg-amber-700 text-white font-medium text-xs sm:text-sm px-3.5 py-2 rounded-xl shadow-sm transition">
+                            <i data-lucide="settings" class="w-4 h-4"></i>
+                            <span>Atur Target Dana Darurat</span>
+                        </button>
+                    </div>
                 </div>
 
                 <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 sm:p-6 border border-slate-200 dark:border-slate-700/80 shadow-sm space-y-5">
@@ -479,7 +540,7 @@
                 <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">Kelola koneksi Google Spreadsheet dan cadangan Excel</p>
             </div>
 
-            <!-- KARTU GOOGLE SPREADSHEET AUTO-SYNC (SESUAI REFERENSI) -->
+            <!-- KARTU GOOGLE SPREADSHEET AUTO-SYNC -->
             <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 sm:p-6 border border-slate-200 dark:border-slate-700/80 shadow-sm space-y-4">
                 <div class="flex items-start sm:items-center space-x-3">
                     <div class="w-10 h-10 sm:w-11 sm:h-11 shrink-0 rounded-xl bg-emerald-50 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 flex items-center justify-center border border-emerald-100 dark:border-emerald-900">
@@ -519,12 +580,12 @@
                 </div>
             </div>
 
-            <!-- KARTU EKSPOR & IMPOR EXCEL -->
+            <!-- KARTU EKSPOR, IMPOR EXCEL & RESET LOKAL -->
             <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 sm:p-6 border border-slate-200 dark:border-slate-700/80 shadow-sm space-y-4">
-                <h3 class="font-bold text-slate-800 dark:text-white text-sm sm:text-base">Ekspor &amp; Impor File Excel (.xlsx)</h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400">Simpan cadangan lokal dengan 4 sheet (`Transaksi`, `Batas Anggaran`, `Target Tabungan`, `Dana Darurat`).</p>
+                <h3 class="font-bold text-slate-800 dark:text-white text-sm sm:text-base">Ekspor, Impor Excel (.xlsx) &amp; Kelola Cache</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Simpan cadangan lokal dengan 4 sheet (`Transaksi`, `Batas Anggaran`, `Target Tabungan`, `Dana Darurat`) atau bersihkan cache lokal.</p>
                 
-                <div class="grid grid-cols-2 sm:flex sm:flex-row gap-2.5 sm:gap-3">
+                <div class="grid grid-cols-2 sm:flex sm:flex-row flex-wrap gap-2.5 sm:gap-3">
                     <button onclick="eksporKeExcel()" class="flex items-center justify-center space-x-2 bg-slate-800 hover:bg-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600 text-white font-medium text-xs sm:text-sm px-4 py-2.5 rounded-xl transition">
                         <i data-lucide="file-output" class="w-4 h-4 shrink-0"></i>
                         <span>Ekspor Excel</span>
@@ -535,6 +596,11 @@
                         <span>Impor Excel</span>
                         <input type="file" id="excelFileInput" accept=".xlsx, .xls" onchange="imporDariExcel(event)" class="hidden">
                     </label>
+
+                    <button onclick="resetCacheLokal()" class="col-span-2 sm:col-span-1 flex items-center justify-center space-x-2 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/50 dark:hover:bg-rose-950 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900 font-medium text-xs sm:text-sm px-4 py-2.5 rounded-xl transition">
+                        <i data-lucide="trash-2" class="w-4 h-4 shrink-0"></i>
+                        <span>Bersihkan Cache Lokal</span>
+                    </button>
                 </div>
             </div>
         </section>
@@ -729,6 +795,41 @@
         </div>
     </div>
 
+    <!-- MODAL 5: SETOR / TARIK CEPAT TABUNGAN & DANA DARURAT -->
+    <div id="modalMutasiDana" class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/60 backdrop-blur-sm">
+        <div class="bg-white dark:bg-slate-800 rounded-t-3xl sm:rounded-2xl max-w-md w-full p-5 sm:p-6 shadow-2xl border border-slate-200 dark:border-slate-700 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-3">
+                <h3 id="modalMutasiTitle" class="font-bold text-slate-800 dark:text-white text-base">Setor Dana</h3>
+                <button onclick="tutupModal('modalMutasiDana')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <form id="formMutasiDana" onsubmit="handleSubmittedMutasiDana(event)" class="space-y-3 text-xs sm:text-sm">
+                <input type="hidden" id="mutasiTargetType">
+                <input type="hidden" id="mutasiTargetId">
+                <input type="hidden" id="mutasiArah">
+
+                <div>
+                    <label class="block font-medium text-slate-600 dark:text-slate-300 mb-1">Nominal (Rp)</label>
+                    <input type="number" id="mutasiNominal" required min="1" placeholder="0" class="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl font-semibold text-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+
+                <div>
+                    <label class="block font-medium text-slate-600 dark:text-slate-300 mb-1">Catatan (Opsional)</label>
+                    <input type="text" id="mutasiCatatan" placeholder="misal: Setoran bulanan..." class="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none">
+                </div>
+
+                <label class="flex items-center gap-2 pt-1 cursor-pointer">
+                    <input type="checkbox" id="mutasiCatatTransaksi" checked class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
+                    <span class="text-xs text-slate-600 dark:text-slate-300">Catat juga ke riwayat Transaksi</span>
+                </label>
+
+                <div class="pt-2 flex justify-end space-x-2">
+                    <button type="button" onclick="tutupModal('modalMutasiDana')" class="px-4 py-2.5 bg-slate-100 dark:bg-slate-700 rounded-xl text-slate-600 dark:text-slate-200 font-medium">Batal</button>
+                    <button type="submit" id="btnSubmitMutasi" class="px-5 py-2.5 bg-emerald-600 text-white font-medium rounded-xl shadow-sm hover:bg-emerald-700">Konfirmasi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- ==================== LOGIC JAVASCRIPT LENGKAP ==================== -->
     <script>
         // =========================================================
@@ -752,6 +853,7 @@
         };
 
         let notifLogList = JSON.parse(localStorage.getItem("bukuSakuNotifLogs") || "[]");
+        let hasPendingSync = localStorage.getItem("bukuSakuPendingSync") === "true";
         let bulanAktifGlobal = new Date().toISOString().slice(0, 7);
         let donutChartInstance = null;
         let lineChartInstance = null;
@@ -874,7 +976,7 @@
                 colorClasses = "bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300";
                 if (dataStatusText) {
                     dataStatusText.className = "font-bold text-rose-600 dark:text-rose-400";
-                    dataStatusText.textContent = "Offline (Lokal localStorage)";
+                    dataStatusText.textContent = hasPendingSync ? "Menunggu Sync Otomatis (Offline)" : "Offline (Lokal localStorage)";
                 }
             }
 
@@ -920,6 +1022,10 @@
                 const json = await res.json();
 
                 if (json.status === "success" && json.data) {
+                    if (hasPendingSync) {
+                        await simpanKeSpreadsheetSekarang(true);
+                        return;
+                    }
                     dbState = normalisasiDbData(json.data);
                     localStorage.setItem("bukuSakuCache", JSON.stringify(dbState));
                     renderSemuaUI();
@@ -938,11 +1044,21 @@
         // ---------------------------------------------------------
         let syncTimer = null;
 
+        function setPendingSyncFlag(val) {
+            hasPendingSync = Boolean(val);
+            localStorage.setItem("bukuSakuPendingSync", String(hasPendingSync));
+        }
+
         function simpanKeSpreadsheetSekarang(immediate = false) {
             localStorage.setItem("bukuSakuCache", JSON.stringify(dbState));
+            setPendingSyncFlag(true);
             setSyncStatus("Menyimpan ke Spreadsheet...", "loading");
 
             const executePost = async () => {
+                if (!navigator.onLine) {
+                    setSyncStatus("Menunggu koneksi untuk sync", "error");
+                    return;
+                }
                 try {
                     const res = await fetch(getSpreadsheetApiUrl(), {
                         method: "POST",
@@ -951,13 +1067,14 @@
                     });
                     const json = await res.json();
                     if (json.status === "success") {
+                        setPendingSyncFlag(false);
                         setSyncStatus("Tersimpan ke Spreadsheet", "success");
                     } else {
                         throw new Error(json.message || "Gagal menyimpan");
                     }
                 } catch (err) {
                     console.error("Error save spreadsheet:", err);
-                    setSyncStatus("Gagal simpan ke Spreadsheet", "error");
+                    setSyncStatus("Gagal simpan (Akan dicoba lagi)", "error");
                 }
             };
 
@@ -968,6 +1085,15 @@
 
             clearTimeout(syncTimer);
             syncTimer = setTimeout(executePost, 1000);
+        }
+
+        function resetCacheLokal() {
+            if (!confirm("Bersihkan cache & riwayat notifikasi di browser ini? Data di Google Spreadsheet tetap aman.")) return;
+            localStorage.removeItem("bukuSakuCache");
+            localStorage.removeItem("bukuSakuNotifLogs");
+            setPendingSyncFlag(false);
+            notifLogList = [];
+            muatDataDariSpreadsheet();
         }
 
         // ---------------------------------------------------------
@@ -989,16 +1115,34 @@
         function renderDashboardCards() {
             document.getElementById("filterBulanDashboard").value = bulanAktifGlobal;
             document.getElementById("filterBulanAnggaran").value = bulanAktifGlobal;
+            document.getElementById("txLabelBulanAktif").textContent = bulanAktifGlobal;
 
             let totalMasuk = 0;
             let totalKeluar = 0;
+            let masukBulan = 0;
+            let keluarBulan = 0;
+
             dbState.transaksi.forEach(t => {
                 const nom = Number(t.nominal || 0);
-                if (t.tipe === "Pemasukan") totalMasuk += nom;
-                else totalKeluar += nom;
+                if (t.tipe === "Pemasukan") {
+                    totalMasuk += nom;
+                    if (t.tanggal && t.tanggal.startsWith(bulanAktifGlobal)) masukBulan += nom;
+                } else {
+                    totalKeluar += nom;
+                    if (t.tanggal && t.tanggal.startsWith(bulanAktifGlobal)) keluarBulan += nom;
+                }
             });
+
             const saldoAset = totalMasuk - totalKeluar;
+            const netBulan = masukBulan - keluarBulan;
+
             document.getElementById("dashSaldoAset").textContent = formatRupiah(saldoAset);
+            document.getElementById("dashMasukBulanIni").textContent = formatRupiah(masukBulan);
+            document.getElementById("dashKeluarBulanIni").textContent = formatRupiah(keluarBulan);
+
+            const netEl = document.getElementById("dashNetBulanIni");
+            netEl.textContent = (netBulan >= 0 ? "+" : "") + formatRupiah(netBulan);
+            netEl.className = `text-xs sm:text-sm font-bold mt-0.5 truncate ${netBulan >= 0 ? 'text-indigo-600 dark:text-indigo-400' : 'text-rose-600 dark:text-rose-400'}`;
 
             document.getElementById("dashSaldoDanaDarurat").textContent = formatRupiah(dbState.danaDarurat.saldo);
             document.getElementById("dashTargetDanaDaruratSub").textContent = "Target: " + formatRupiah(dbState.danaDarurat.target);
@@ -1030,7 +1174,7 @@
             document.getElementById("dashTotalBatasAnggaranSub").textContent = `Sisa dari total batas ${formatRupiah(totalBatasAktif)}`;
         }
 
-        // DONUT CHART: DISTRIBUSI MASUK & KELUAR (SESUAI GAMBAR REFERENSI)
+        // DONUT CHART: DISTRIBUSI MASUK & KELUAR
         function renderDonutChart() {
             const ctx = document.getElementById("chartDonut").getContext("2d");
             const dark = isDarkModeActive();
@@ -1288,6 +1432,16 @@
             `).join('');
         }
 
+        function resetFilterTransaksi() {
+            document.getElementById("txSearch").value = "";
+            document.getElementById("txFilterJenis").value = "semua";
+            document.getElementById("txSortBy").value = "tgl-desc";
+            document.getElementById("txFilterTglAwal").value = "";
+            document.getElementById("txFilterTglAkhir").value = "";
+            document.getElementById("txFilterBulanAktifCheck").checked = false;
+            renderTabelTransaksi();
+        }
+
         function renderTabelTransaksi() {
             const tbody = document.getElementById("tblFullTransaksi");
             const searchVal = document.getElementById("txSearch").value.toLowerCase();
@@ -1295,18 +1449,20 @@
             const tglAwal = document.getElementById("txFilterTglAwal").value;
             const tglAkhir = document.getElementById("txFilterTglAkhir").value;
             const sortBy = document.getElementById("txSortBy").value;
+            const onlyActiveMonth = document.getElementById("txFilterBulanAktifCheck").checked;
 
             let filtered = dbState.transaksi.filter(t => {
                 const matchCatatan = (t.catatan || "").toLowerCase().includes(searchVal) || (t.kategori || "").toLowerCase().includes(searchVal);
                 const matchJenis = (jenisVal === "semua") || (t.tipe === jenisVal);
                 const matchTglAwal = !tglAwal || (t.tanggal >= tglAwal);
                 const matchTglAkhir = !tglAkhir || (t.tanggal <= tglAkhir);
-                return matchCatatan && matchJenis && matchTglAwal && matchTglAkhir;
+                const matchBulan = !onlyActiveMonth || (t.tanggal && t.tanggal.startsWith(bulanAktifGlobal));
+                return matchCatatan && matchJenis && matchTglAwal && matchTglAkhir && matchBulan;
             });
 
             filtered.sort((a, b) => {
                 if (sortBy === "tgl-desc") return (b.tanggal + (b.waktu || "")).localeCompare(a.tanggal + (a.waktu || ""));
-                if (sortBy === "tgl-asc") return (a.tanggal + (a.waktu || "")).localeCompare(b.tanggal + (a.waktu || ""));
+                if (sortBy === "tgl-asc") return (a.tanggal + (a.waktu || "")).localeCompare(b.tanggal + (b.waktu || ""));
                 if (sortBy === "nom-desc") return Number(b.nominal) - Number(a.nominal);
                 if (sortBy === "nom-asc") return Number(a.nominal) - Number(b.nominal);
                 return 0;
@@ -1461,6 +1617,17 @@
                                 <span class="font-bold text-indigo-600 dark:text-indigo-400 shrink-0">${percent}%</span>
                             </div>
                         </div>
+
+                        <div class="pt-2 border-t border-slate-100 dark:border-slate-700 grid grid-cols-2 gap-1.5 text-[11px] font-semibold">
+                            <button onclick="bukaModalMutasiDana('tabungan', 'setor', '${t.id}')" class="py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 flex items-center justify-center gap-1 transition">
+                                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                                <span>Setor</span>
+                            </button>
+                            <button onclick="bukaModalMutasiDana('tabungan', 'tarik', '${t.id}')" class="py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 flex items-center justify-center gap-1 transition">
+                                <i data-lucide="minus" class="w-3.5 h-3.5"></i>
+                                <span>Tarik</span>
+                            </button>
+                        </div>
                     </div>
                 `;
             }).join('');
@@ -1564,6 +1731,18 @@
         // ---------------------------------------------------------
         // 3. HANDLER AKSI: TAMBAH / EDIT / HAPUS TRANSAKSI
         // ---------------------------------------------------------
+        function getKategoriOptionsByTipe(tipe) {
+            const baseList = tipe === "Pemasukan" ? KATEGORI_PEMASUKAN_DEFAULT : KATEGORI_PENGELUARAN_DEFAULT;
+            const customFromAnggaran = (tipe === "Pengeluaran")
+                ? dbState.anggaran.map(a => a.kategori).filter(Boolean)
+                : [];
+            const customFromTx = dbState.transaksi
+                .filter(t => t.tipe === tipe && t.kategori)
+                .map(t => t.kategori);
+
+            return Array.from(new Set([...baseList, ...customFromAnggaran, ...customFromTx]));
+        }
+
         function simpanFormTransaksi(formData, editId = null) {
             const record = {
                 id: editId || ("tx-" + Date.now()),
@@ -1635,10 +1814,15 @@
 
         function updateKategoriDropdown(tipe, selectedKat = null) {
             const select = document.getElementById("txKategori");
-            const list = tipe === "Pemasukan" ? KATEGORI_PEMASUKAN_DEFAULT : KATEGORI_PENGELUARAN_DEFAULT;
+            const list = getKategoriOptionsByTipe(tipe);
 
             select.innerHTML = list.map(k => `<option value="${k}">${k}</option>`).join('');
-            if (selectedKat) select.value = selectedKat;
+            if (selectedKat) {
+                if (!list.includes(selectedKat)) {
+                    select.innerHTML += `<option value="${selectedKat}">${selectedKat}</option>`;
+                }
+                select.value = selectedKat;
+            }
         }
 
         function tambahNominalCepat(val) {
@@ -1714,6 +1898,7 @@
             document.getElementById("anggaranEditId").value = "";
             document.getElementById("anggaranBulan").value = bulanAktifGlobal;
             document.getElementById("anggaranBatas").value = "";
+            document.getElementById("anggaranKategoriBaru").value = "";
             document.getElementById("anggaranKategori").value = "Makan";
             toggleKategoriBaruInput("Makan");
             document.getElementById("modalAnggaran").classList.remove("hidden");
@@ -1829,7 +2014,7 @@
         }
 
         // ---------------------------------------------------------
-        // 6. HANDLER AKSI: DANA DARURAT
+        // 6. HANDLER AKSI: DANA DARURAT & SETOR/TARIK CEPAT
         // ---------------------------------------------------------
         function simpanFormDanaDarurat(targetBaru, saldoBaru) {
             dbState.danaDarurat = {
@@ -1854,6 +2039,85 @@
 
             tutupModal("modalDanaDarurat");
             simpanFormDanaDarurat(targetBaru, saldoBaru);
+        }
+
+        function bukaModalMutasiDana(targetType, arah, targetId = "") {
+            document.getElementById("mutasiTargetType").value = targetType;
+            document.getElementById("mutasiArah").value = arah;
+            document.getElementById("mutasiTargetId").value = targetId;
+            document.getElementById("mutasiNominal").value = "";
+            document.getElementById("mutasiCatatan").value = "";
+            document.getElementById("mutasiCatatTransaksi").checked = true;
+
+            let labelTarget = "Dana Darurat";
+            if (targetType === "tabungan") {
+                const found = dbState.tabungan.find(t => t.id === targetId);
+                labelTarget = found ? found.nama : "Tabungan";
+            }
+
+            const aksiLabel = arah === "setor" ? "Setor" : "Tarik";
+            document.getElementById("modalMutasiTitle").textContent = `${aksiLabel} ${labelTarget}`;
+
+            const btnSubmit = document.getElementById("btnSubmitMutasi");
+            btnSubmit.textContent = `${aksiLabel} Sekarang`;
+            btnSubmit.className = `px-5 py-2.5 text-white font-medium rounded-xl shadow-sm transition ${
+                arah === "setor" ? "bg-emerald-600 hover:bg-emerald-700" : "bg-rose-600 hover:bg-rose-700"
+            }`;
+
+            document.getElementById("modalMutasiDana").classList.remove("hidden");
+        }
+
+        function handleSubmittedMutasiDana(e) {
+            e.preventDefault();
+            const targetType = document.getElementById("mutasiTargetType").value;
+            const arah = document.getElementById("mutasiArah").value;
+            const targetId = document.getElementById("mutasiTargetId").value;
+            const nominal = Number(document.getElementById("mutasiNominal").value || 0);
+            const catatanInput = document.getElementById("mutasiCatatan").value.trim();
+            const catatTx = document.getElementById("mutasiCatatTransaksi").checked;
+
+            if (nominal <= 0) return;
+
+            let labelTarget = "Dana Darurat";
+
+            if (targetType === "danaDarurat") {
+                const current = Number(dbState.danaDarurat.saldo || 0);
+                if (arah === "tarik" && nominal > current) {
+                    alert("Saldo dana darurat tidak mencukupi untuk ditarik.");
+                    return;
+                }
+                dbState.danaDarurat.saldo = arah === "setor" ? current + nominal : current - nominal;
+            } else if (targetType === "tabungan") {
+                const item = dbState.tabungan.find(t => t.id === targetId);
+                if (!item) return;
+                labelTarget = item.nama;
+                const current = Number(item.terkumpul || 0);
+                if (arah === "tarik" && nominal > current) {
+                    alert(`Saldo tabungan "${item.nama}" tidak mencukupi untuk ditarik.`);
+                    return;
+                }
+                item.terkumpul = arah === "setor" ? current + nominal : current - nominal;
+            }
+
+            tutupModal("modalMutasiDana");
+
+            if (catatTx) {
+                const now = new Date();
+                const txRecord = {
+                    id: "tx-" + Date.now(),
+                    tipe: arah === "setor" ? "Pengeluaran" : "Pemasukan",
+                    kategori: targetType === "danaDarurat" ? "Dana Darurat" : "Investasi",
+                    nominal: nominal,
+                    tanggal: now.toISOString().split('T')[0],
+                    waktu: now.toTimeString().split(' ')[0].slice(0, 5),
+                    catatan: catatanInput || `${arah === "setor" ? "Setor" : "Tarik"} ${labelTarget}`
+                };
+                dbState.transaksi.unshift(txRecord);
+                tambahNotifikasiTransaksi(txRecord, false);
+            }
+
+            renderSemuaUI();
+            simpanKeSpreadsheetSekarang();
         }
 
         // ---------------------------------------------------------
@@ -1907,6 +2171,10 @@
             const file = event.target.files[0];
             if (!file) return;
 
+            const mergeMode = confirm(
+                "Pilih mode impor Excel:\n• OK = GABUNGKAN dengan data yang sudah ada\n• Cancel = TIMPA seluruh data lama"
+            );
+
             const reader = new FileReader();
             reader.onload = function(e) {
                 const data = new Uint8Array(e.target.result);
@@ -1914,8 +2182,8 @@
 
                 if (workbook.Sheets["Transaksi"]) {
                     const rawTx = XLSX.utils.sheet_to_json(workbook.Sheets["Transaksi"]);
-                    dbState.transaksi = rawTx.map(r => ({
-                        id: String(r["ID Transaksi"] || ("tx-" + Date.now())),
+                    const parsedTx = rawTx.map((r, idx) => ({
+                        id: String(r["ID Transaksi"] || ("tx-" + Date.now() + "-" + idx)),
                         tipe: r["Tipe"] || "Pengeluaran",
                         kategori: r["Kategori"] || "Lainnya",
                         nominal: Number(r["Nominal (Rp)"] || 0),
@@ -1923,40 +2191,67 @@
                         waktu: String(r["Waktu"] || "00:00"),
                         catatan: String(r["Catatan"] || "")
                     }));
+
+                    if (mergeMode) {
+                        const mapTx = new Map(dbState.transaksi.map(item => [item.id, item]));
+                        parsedTx.forEach(item => mapTx.set(item.id, item));
+                        dbState.transaksi = Array.from(mapTx.values());
+                    } else {
+                        dbState.transaksi = parsedTx;
+                    }
                 }
 
                 if (workbook.Sheets["Batas Anggaran"]) {
                     const rawBg = XLSX.utils.sheet_to_json(workbook.Sheets["Batas Anggaran"]);
-                    dbState.anggaran = rawBg.map(r => ({
-                        id: String(r["ID Anggaran"] || ("bg-" + Date.now())),
+                    const parsedBg = rawBg.map((r, idx) => ({
+                        id: String(r["ID Anggaran"] || ("bg-" + Date.now() + "-" + idx)),
                         kategori: r["Kategori"] || "Makan",
                         bulan: normalisasiBulan(r["Bulan"] || bulanAktifGlobal),
                         batas: Number(r["Batas Nominal (Rp)"] || 0),
                         aktif: String(r["Status Aktif"]).toLowerCase() === "aktif" || r["Status Aktif"] === true
                     }));
+
+                    if (mergeMode) {
+                        const mapBg = new Map(dbState.anggaran.map(item => [item.id, item]));
+                        parsedBg.forEach(item => mapBg.set(item.id, item));
+                        dbState.anggaran = Array.from(mapBg.values());
+                    } else {
+                        dbState.anggaran = parsedBg;
+                    }
                 }
 
                 if (workbook.Sheets["Target Tabungan"]) {
                     const rawTg = XLSX.utils.sheet_to_json(workbook.Sheets["Target Tabungan"]);
-                    dbState.tabungan = rawTg.map((r, idx) => ({
-                        id: "tg-" + (idx + 1),
+                    const parsedTg = rawTg.map((r, idx) => ({
+                        id: "tg-" + (idx + 1) + "-" + r["Nama Target"],
                         nama: r["Nama Target"] || "Target",
                         target: Number(r["Nominal Target (Rp)"] || 0),
                         terkumpul: Number(r["Nominal Terkumpul (Rp)"] || 0),
                         tanggalTarget: normalisasiTanggal(r["Tanggal Target"])
                     }));
+
+                    if (mergeMode) {
+                        const mapTg = new Map(dbState.tabungan.map(item => [item.nama.toLowerCase(), item]));
+                        parsedTg.forEach(item => mapTg.set(item.nama.toLowerCase(), item));
+                        dbState.tabungan = Array.from(mapTg.values());
+                    } else {
+                        dbState.tabungan = parsedTg;
+                    }
                 }
 
                 if (workbook.Sheets["Dana Darurat"]) {
                     const rawDd = XLSX.utils.sheet_to_json(workbook.Sheets["Dana Darurat"]);
                     if (rawDd.length > 0) {
+                        const importedTarget = Number(rawDd[0]["Target Dana Darurat (Rp)"] || dbState.danaDarurat.target);
+                        const importedSaldo = Number(rawDd[0]["Saldo Dana Darurat Saat Ini (Rp)"] || 0);
                         dbState.danaDarurat = {
-                            target: Number(rawDd[0]["Target Dana Darurat (Rp)"] || 400000000),
-                            saldo: Number(rawDd[0]["Saldo Dana Darurat Saat Ini (Rp)"] || 10000000)
+                            target: importedTarget,
+                            saldo: mergeMode ? Number(dbState.danaDarurat.saldo || 0) + importedSaldo : importedSaldo
                         };
                     }
                 }
 
+                event.target.value = "";
                 renderSemuaUI();
                 simpanKeSpreadsheetSekarang();
                 alert("Berhasil mengimpor data dari Excel!");
@@ -2011,10 +2306,27 @@
             renderSemuaUI();
         }
 
-        function toggleNotifDropdown() {
+        function toggleNotifDropdown(event) {
+            if (event) event.stopPropagation();
             const drop = document.getElementById("notifDropdown");
             drop.classList.toggle("hidden");
         }
+
+        document.addEventListener("click", (e) => {
+            const drop = document.getElementById("notifDropdown");
+            const container = document.getElementById("notifContainer");
+            if (drop && !drop.classList.contains("hidden") && container && !container.contains(e.target)) {
+                drop.classList.add("hidden");
+            }
+        });
+
+        window.addEventListener("online", () => {
+            if (hasPendingSync) {
+                simpanKeSpreadsheetSekarang(true);
+            } else {
+                muatDataDariSpreadsheet();
+            }
+        });
 
         function tutupModal(id) {
             document.getElementById(id).classList.add("hidden");
