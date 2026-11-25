@@ -243,26 +243,31 @@
 
             <!-- CHARTS SECTION -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
-                <!-- Donut Chart: Distribusi Masuk & Keluar -->
-                <div class="lg:col-span-5 bg-white dark:bg-slate-800 rounded-2xl p-4 sm:p-6 border border-slate-200 dark:border-slate-700/80 shadow-sm flex flex-col justify-between">
-                    <div class="flex items-start justify-between gap-2 mb-4">
-                        <div>
-                            <h3 class="font-bold text-slate-800 dark:text-white text-base sm:text-lg tracking-tight">Distribusi Masuk &amp; Keluar</h3>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Pemasukan dan pengeluaran berdasarkan kategori.</p>
+                <!-- Donut Chart: Distribusi Masuk & Keluar (Sesuai Gambar Referensi) -->
+                <div class="lg:col-span-5 bg-white dark:bg-slate-800 rounded-2xl p-5 sm:p-6 border border-slate-200 dark:border-slate-700/80 shadow-sm flex flex-col justify-between">
+                    <div class="flex items-start justify-between gap-3 mb-5">
+                        <div class="max-w-[56%]">
+                            <h3 class="font-bold text-slate-900 dark:text-white text-base sm:text-lg leading-snug tracking-tight">Distribusi Masuk &amp; Keluar</h3>
+                            <p class="text-xs text-slate-400 dark:text-slate-400 mt-1 leading-relaxed">Pemasukan dan pengeluaran berdasarkan kategori.</p>
                         </div>
-                        <span id="donutTotalBadge" class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-600 dark:bg-indigo-950/80 dark:text-indigo-300 shrink-0">Rp 0</span>
-                    </div>
-
-                    <div class="flex flex-col sm:flex-row items-center justify-between gap-5 my-auto">
-                        <div class="relative w-44 h-44 sm:w-48 sm:h-48 shrink-0 flex items-center justify-center">
-                            <canvas id="chartDonut"></canvas>
-                            <div class="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center px-3">
-                                <span class="text-[11px] font-medium text-slate-400 dark:text-slate-500">Total</span>
-                                <span id="donutCenterTotal" class="text-xs sm:text-sm font-bold text-slate-800 dark:text-white leading-tight mt-0.5">Rp 0</span>
+                        <div class="text-right space-y-1 text-xs shrink-0 pt-0.5">
+                            <div class="flex items-center justify-end gap-2">
+                                <span class="text-slate-600 dark:text-slate-300 font-medium">Pemasukan</span>
+                                <span id="donutSummaryMasuk" class="font-bold text-emerald-600 dark:text-emerald-400">Rp0</span>
+                            </div>
+                            <div class="flex items-center justify-end gap-2">
+                                <span class="text-slate-600 dark:text-slate-300 font-medium">Pengeluaran</span>
+                                <span id="donutSummaryKeluar" class="font-bold text-rose-600 dark:text-rose-400">Rp0</span>
                             </div>
                         </div>
+                    </div>
 
-                        <div id="donutLegend" class="w-full flex-1 space-y-2.5 text-xs sm:text-sm"></div>
+                    <div class="flex flex-row items-center justify-between gap-5 sm:gap-6 my-auto py-1">
+                        <div class="relative w-40 h-40 sm:w-44 sm:h-44 shrink-0 flex items-center justify-center">
+                            <canvas id="chartDonut"></canvas>
+                        </div>
+
+                        <div id="donutLegend" class="w-full flex-1 space-y-2.5 text-xs sm:text-sm min-w-0"></div>
                     </div>
                 </div>
 
@@ -759,17 +764,20 @@
             return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(number || 0);
         }
 
+        function formatRupiahCompact(number) {
+            return 'Rp' + new Intl.NumberFormat('id-ID', { maximumFractionDigits: 0 }).format(number || 0);
+        }
+
         function isDarkModeActive() {
             return document.documentElement.classList.contains("dark");
         }
 
-        // Helper Normalisasi Tanggal & Bulan dari Google Sheets (mencegah format ISO Date mengacaukan filter)
+        // Helper Normalisasi Tanggal & Bulan dari Google Sheets
         function normalisasiBulan(val) {
             if (!val) return bulanAktifGlobal;
             const s = String(val).trim();
             if (/^\d{4}-\d{2}$/.test(s)) return s;
             if (/^\d{4}-\d{2}-\d{2}/.test(s)) {
-                // Jika berupa ISO timestamp dari Google Sheets, konversi ke waktu lokal dulu
                 if (s.includes("T")) {
                     const d = new Date(s);
                     if (!isNaN(d.getTime())) {
@@ -907,7 +915,6 @@
             }
 
             try {
-                // Tambahkan parameter cache-buster agar browser tidak memakai respon GET lama
                 const fetchUrl = apiUrl + (apiUrl.includes("?") ? "&" : "?") + "_t=" + Date.now();
                 const res = await fetch(fetchUrl, { method: "GET" });
                 const json = await res.json();
@@ -1023,7 +1030,7 @@
             document.getElementById("dashTotalBatasAnggaranSub").textContent = `Sisa dari total batas ${formatRupiah(totalBatasAktif)}`;
         }
 
-        // DONUT CHART: DISTRIBUSI MASUK & KELUAR
+        // DONUT CHART: DISTRIBUSI MASUK & KELUAR (SESUAI GAMBAR REFERENSI)
         function renderDonutChart() {
             const ctx = document.getElementById("chartDonut").getContext("2d");
             const dark = isDarkModeActive();
@@ -1031,19 +1038,27 @@
             const txBulanIni = dbState.transaksi.filter(t => t.tanggal && t.tanggal.startsWith(bulanAktifGlobal));
             const katMap = {};
             let totalNominalBulan = 0;
+            let totalMasukBulan = 0;
+            let totalKeluarBulan = 0;
 
             txBulanIni.forEach(t => {
                 const nom = Number(t.nominal || 0);
                 const kat = t.kategori || "Lainnya";
                 katMap[kat] = (katMap[kat] || 0) + nom;
                 totalNominalBulan += nom;
+
+                if (t.tipe === "Pemasukan") {
+                    totalMasukBulan += nom;
+                } else {
+                    totalKeluarBulan += nom;
+                }
             });
 
-            document.getElementById("donutTotalBadge").textContent = formatRupiah(totalNominalBulan);
-            document.getElementById("donutCenterTotal").textContent = formatRupiah(totalNominalBulan);
+            document.getElementById("donutSummaryMasuk").textContent = formatRupiahCompact(totalMasukBulan);
+            document.getElementById("donutSummaryKeluar").textContent = formatRupiahCompact(totalKeluarBulan);
 
             const sortedEntries = Object.entries(katMap).sort((a, b) => b[1] - a[1]);
-            const palette = ['#10b981', '#64748b', '#f43f5e', '#2563eb', '#8b5cf6', '#f97316', '#06b6d4'];
+            const palette = ['#0ca678', '#f43f5e', '#3b82f6', '#f59e0b', '#8b5cf6', '#06b6d4', '#64748b'];
 
             if (donutChartInstance) donutChartInstance.destroy();
 
@@ -1064,11 +1079,11 @@
                         responsive: true,
                         maintainAspectRatio: false,
                         plugins: { legend: { display: false }, tooltip: { enabled: false } },
-                        cutout: '76%'
+                        cutout: '70%'
                     }
                 });
 
-                legendBox.innerHTML = `<p class="text-xs text-slate-400 italic text-center sm:text-left">Belum ada transaksi pada periode ${bulanAktifGlobal}.</p>`;
+                legendBox.innerHTML = `<p class="text-xs text-slate-400 italic">Belum ada transaksi periode ${bulanAktifGlobal}.</p>`;
                 return;
             }
 
@@ -1084,7 +1099,7 @@
                         data: dataVals,
                         backgroundColor: colors,
                         borderColor: dark ? '#1e293b' : '#ffffff',
-                        borderWidth: 2,
+                        borderWidth: sortedEntries.length > 1 ? 2 : 0,
                         hoverOffset: 4
                     }]
                 },
@@ -1103,7 +1118,7 @@
                             }
                         }
                     },
-                    cutout: '76%'
+                    cutout: '70%'
                 }
             });
 
@@ -1111,12 +1126,12 @@
                 const pct = totalNominalBulan > 0 ? Math.round((val / totalNominalBulan) * 100) : 0;
                 const color = colors[idx];
                 return `
-                    <div class="flex items-center justify-between gap-2">
+                    <div class="flex items-center justify-between gap-2.5">
                         <div class="flex items-center gap-2 min-w-0">
                             <span class="w-2.5 h-2.5 shrink-0 rounded-full" style="background-color: ${color}"></span>
                             <span class="truncate text-slate-600 dark:text-slate-300 font-medium">${lbl}</span>
                         </div>
-                        <span class="font-bold text-slate-800 dark:text-white shrink-0">${pct}%</span>
+                        <span class="font-bold text-slate-900 dark:text-white shrink-0">${pct}%</span>
                     </div>
                 `;
             }).join('');
